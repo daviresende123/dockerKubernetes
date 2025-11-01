@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-hello-deployment
+  labels:
+    app: spring-hello
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: spring-hello
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: spring-hello
+        tier: backend
+    spec:
+      containers:
+      - name: spring-hello
+        image: davigomides161/spring-hello:1.0.0
+        ports:
+        - containerPort: 8080
+          name: http
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /hello
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /hello
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 5
